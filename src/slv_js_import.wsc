@@ -11,11 +11,16 @@
 
 <public>
 <comment>
-	LICENSE	GPLv3
-	@file:	"slv_js_import.wsc"
-	19:02 30.03.2014	begin project
+/*
+	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
+	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
+*/
 
-	Author:	Svyatoslav Skriplyonok (Simvesel/Simron)
+
+	@file:   "slv_js_import.wsc"
+	@begin:  19:02 30.03.2014
+	@author: Svyatoslav Skriplyonok (Simvesel/Simron)
 </comment>
 
 	<method name="fn_import"/>

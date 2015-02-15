@@ -1,3 +1,10 @@
+/*
+	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
+	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
+*/
+
+
 "use strict";
 
 //var myComp = new ActiveXObject("new:{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}");
