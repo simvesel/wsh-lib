@@ -66,8 +66,12 @@ function fn_try_catch( fn_name )
 		var mvArgs = [];
 		if( arguments.length > 1 )
 		{
-			var i = arguments.length-1;
-			while( i-- ) mvArgs[ i ] = arguments[ i+1 ];
+			var i = arguments.length - 2;
+			do
+			{
+			  mvArgs[ i ] = arguments[ i+1 ];
+			}
+			while( i-- > 0 );
 //			echo( "mvArgs", mvArgs );
 		}
 		return fn_name.apply( global, mvArgs );
@@ -102,7 +106,7 @@ function fn_exec_ie_prompt( mcData )
 
 	var obj = oIE.Document.Script;
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
-	mcData.xcOut_val = null;
+//	mcData.xcOut_val = null;
 	oIE.Quit();
 
 	if( mcData.xcOut_val === null )
@@ -129,16 +133,29 @@ function fn_exec_ie_prompt( mcData )
 		return true;
 
 		case 'nat':
-//			masRegExp = /^\d+$/;
-			masRegExp = /^[1-9][0-9]*$/;
+			masRegExp = /^[1-9]\d*$/;
 		break;
 
 		case 'int':
 			masRegExp = /^(\+|-)?\d+$/;
 		break;
 
+		case 'url':
+			masRegExp = /^(https?|ftps?):\/\/.+$/;
+		break;
+
+
 		default:
-			masRegExp = /^.*$/;
+		{
+			if( mcData.xasValidRule.length === 0 )
+			{
+				masRegExp = /^.*$/;
+			}
+			else
+			{
+				masRegExp = new RegExp( mcData.xasValidRule );
+			}
+		}
 	}
 
 //	throw new Error( 69, "Value incorrect \"" + masRegExp.toString() + "\"" );
