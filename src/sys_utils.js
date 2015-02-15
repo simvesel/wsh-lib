@@ -26,15 +26,23 @@ function recursive_property( obj, masPath, iDeep )
 		for( var key in obj )
 		{
 			var mcVal = obj[ key ];
-			if( typeof mcVal === "object" )
-			{
-				++iDeep;
-				masPath += "\n" + recursive_property( mcVal, masPath + "." + key, iDeep );
-				masPath += "\n" + masCurr;
-			}
-			else if ( typeof mcVal !== "function" )
+			if( typeof mcVal === 'string' )
 			{
 				masPath += '\n"' + key + '":"' + mcVal + '"';
+			}
+			else if( typeof mcVal === 'function' )
+			{
+				masPath += '\n"' + key + '":\tFUNCTION';
+			}
+			else if( typeof mcVal !== 'object' || mcVal === null )
+			{
+				masPath += '\n"' + key + '":\t' + mcVal;
+			}
+			else
+			{
+				++iDeep;
+				masPath += "\n" + recursive_property( mcVal, masCurr + "." + key, iDeep );
+				masPath += "\n" + masCurr;
 			}
 		}
 	}
@@ -94,16 +102,22 @@ function fn_exec_ie_prompt( mcData )
 
 	var obj = oIE.Document.Script;
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
+	mcData.xcOut_val = null;
 	oIE.Quit();
 
-	if( typeof mcData.xasValidRule === 'undefined' )
+	if( mcData.xcOut_val === null )
 	{
-		mcData.xasValidRule = "";
+		return false;
 	}
 
 	if( typeof mcData.xcOut_val !== 'string' )
 	{
 		mcData.xcOut_val = "" + mcData.xcOut_val;
+	}
+
+	if( typeof mcData.xasValidRule === 'undefined' )
+	{
+		mcData.xasValidRule = "";
 	}
 
 	var masRegExp;

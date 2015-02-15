@@ -19,7 +19,6 @@
 </comment>
 
 	<method name="fn_import"/>
-	<property name="ScriptingHost" internalName="WScript"/>
 	<property name="xasOwnPath" internalName="g_asOwnPath"/>
 	<property name="xasLibDirPath" internalName="g_asLibDirPath"/>
 </public>
@@ -27,8 +26,8 @@
 <resource id="rsrc_code_main"><![CDATA[
 "use strict";
 
-var g_cInc = {};
-g_cInc.masAbsolutePath = g_asLibDirPath;
+var g_cApp = {};
+g_cApp.xasAbsolutePath = g_asLibDirPath;
 
 function general_inc( jsFile )
 {
@@ -42,7 +41,12 @@ function general_inc( jsFile )
 
 function g_inc( jsFile )
 {
-	return general_inc( g_cInc.masAbsolutePath + jsFile );
+	return general_inc( g_cApp.xasAbsolutePath + jsFile );
+}
+
+function fn_get_app_instance()
+{
+	return g_cApp;
 }
 
 ]]></resource>
@@ -52,11 +56,12 @@ var g_ws = WScript,
 		g_fso = new ActiveXObject( "Scripting.FileSystemObject" ),
 		g_sh = new ActiveXObject( "WScript.Shell" );
 
-g_cInc.masRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
+g_cApp.xasAppName = g_fso.GetBaseName( g_ws.ScriptName );
+g_cApp.xasRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
 
 function r_inc( jsFile )
 {
-	return general_inc( g_cInc.masRelativePath + jsFile );
+	return general_inc( g_cApp.xasRelativePath + jsFile );
 }
 
 ]]></resource>
@@ -87,58 +92,186 @@ function getR_incSource()
 };
 
 
-
-var g_bFisrtCallImport = true;
-
-var g_vLibsAlias =
-{
-	"alias": "func_alias.js",
-	"utils": "sys_utils.js"
-}
-
-/*
-var
-
-sys_utils.js
-test_my_owns_comp.js
-wsh_args_escape.js
-exec_args_escape.js
-func_alias.js
-*/
-
 eval( getMainSource() );
 
-function fn_import( masLibs )
+/*
+Индекс с ранее обработанными алиасами
+Массив алиасов, которые нужно заинклудить (сложных алиасов не должно быть!!!)
+Последний элемент удалять из массива и передавать в рекурсивную функцию уменьшенный массив.
+Последний элемент-имя файла добавлять в массив подключений с первоначальным алиасом.
+*/
+
+//JSON	http://stackoverflow.com/questions/2994577/is-there-a-publicly-available-cdn-that-hosts-json2
+var g_vLibsAliases =
 {
-	var masSources = "";
-	if( g_bFisrtCallImport )
+	"json": "json3_min.js", //"json2.js",
+	"utils": "sys_utils.js",
+	"exec": [ "utils", "exec_args_escape.js" ],
+	"exec_wsh": [ "utils", "wsh_args_escape.js" ],
+//	"recurv_00": [ "utils", "json-cfg", "recurv_00.js" ],
+	"json-cfg": [ "json", "json-cfg.js" ], /* последний элемент -- имя файла */
+	"dummy": ""
+}
+
+var g_cIndexProcessedLibsAlias = {};
+
+var g_vLibImportStructure = [];
+
+var g_bFisrtCallImport = true;
+var g_vLibImportDeep;
+
+
+// Create a new object, that prototypally inherits from the Error constructor.
+function ImportError( message )
+{
+  this.name = "ImportError";
+  this.message = message || "Default message...";
+}
+//ImportError.prototype = Error.prototype;
+ImportError.prototype = new Error();
+ImportError.prototype.constructor = ImportError;
+
+
+/*
+короткосложный_импорт => длиннопростой_импорт
+*/
+function deploy_complex_alias( mvAliases )
+{
+	if( g_vLibImportDeep > 99 )
 	{
-		masSources += getMainSource()
-		masSources += getR_incSource();
-		g_bFisrtCallImport = false;
+		throw new ImportError( "Too large import deep!" );
 	}
 
-	var mvStr = masLibs.split( " " );
-	masLibs = null;
-	mvStr.unshift( "alias" );
+	var i = 0, len = mvAliases.length;
 
-	var i = 0, len = mvStr.length;
 	for( ; i < len; ++i )
 	{
-		var masFile = g_vLibsAlias[ mvStr[ i ] ];
-		if( typeof masFile !== 'undefined' )
+		var masAlias = mvAliases[ i ];
+		var mcVal = g_cIndexProcessedLibsAlias[ masAlias ];
+		if( mcVal === 1 )
 		{
-			masSources += g_inc( masFile );
+			continue;
+		}
+
+		mcVal = g_vLibsAliases[ masAlias ];
+
+		if( typeof mcVal === 'string' )
+		{
+			g_cIndexProcessedLibsAlias[ masAlias ] = 1;
+			g_vLibImportStructure.push( masAlias );
+			g_vLibImportStructure.push( mcVal );
+		}
+//	else if( mcVal instanceof Array )
+		else if( Object.prototype.toString.call( mcVal ) === '[object Array]' )
+		{
+			var masFileName = mcVal.pop();
+			g_cIndexProcessedLibsAlias[ masAlias ] = 1;
+
+			++g_vLibImportDeep;
+			deploy_complex_alias( mcVal );
+
+			g_vLibImportStructure.push( masAlias );
+			g_vLibImportStructure.push( masFileName );
 		}
 		else
 		{
-			masSources += '\n/*\nLib alias: "' + mvStr[ i ] + '"\n';
-			masSources += 'Not found in the dictionary of libraries!\n*/\n';
+			var err = new Error();
+			throw new ImportError( "Unknown ALIAS type!\n\n" + err.stack );
 		}
+
+/*
+throw {
+    name:        "System Error",
+    level:       "Show Stopper",
+    message:     "Error detected. Please contact the system administrator.",
+    htmlMessage: "Error detected. Please contact the <a href=\"mailto:sysadmin@acme-widgets.com\">system administrator</a>.",
+    toString:    function(){return this.name + ": " + this.message;}
+};
+*/
+
+	}
+}
+
+
+//=============================================================
+function fn_import( masLibs )
+{
+	g_vLibImportDeep = 0;
+	deploy_complex_alias( masLibs.split( " " ) );
+	masLibs = null;
+
+	var masSources = "";
+	if( g_bFisrtCallImport )
+	{
+		g_bFisrtCallImport = false;
+
+		masSources += getMainSource()
+		masSources += getR_incSource();
+
+// при первом вызове fn_import ВСЕГДА принудительно подключаем
+		g_vLibImportStructure.unshift( "func_alias.js" );
+		g_vLibImportStructure.unshift( "alias" ); // нулевой индекс будет
+	}
+
+	var masErrors = "", masErrAliases = "";
+	var miErrCounter = 0, i = 0, len = g_vLibImportStructure.length;
+	for( ; i < len; )
+	{
+		var masAlias = g_vLibImportStructure[ i++ ];
+		var masFile = g_vLibImportStructure[ i++ ];
+
+		var masOneFileSource;
+		try
+		{
+			masOneFileSource = g_inc( masFile );
+		}
+		catch( cEx )
+		{
+			++miErrCounter;
+			masOneFileSource = "";
+
+			masErrAliases += masAlias + ' ';
+			masErrors += '\n/*\n\t===============================\nError load "LIB-ALIAS"!\nAlias: "';
+			masErrors += masAlias + '"\nFILE: "';
+			masErrors += masFile + '"\n{{\nname: "';
+			masErrors += cEx.name;
+
+			masErrors += '"\nmessage: "';
+			masErrors += cEx.message;
+
+			masErrors += '"\nnumber: "';
+			masErrors += cEx.number;
+
+			masErrors += '"\ndescription: "';
+			masErrors += cEx.description;
+
+			masErrors += '"\n\nSTACK:\n';
+			masErrors += cEx.stack;
+
+			masErrors += '\n}}\n\t===============================\n*/\n';
+/*
+			masErrors += cEx.
+			masErrors += cEx.
+*/
+		}
+
+		masSources += masOneFileSource + '\n;;;;;;;\n';
+	}
+
+
+	if( miErrCounter !== 0 )
+	{
+		masSources += '\n\necho( "Import errors: ';
+		masSources += miErrCounter;
+		masSources += '\\nALIASES:\\n\\"';
+		masSources += masErrAliases + '\\"';
+		masSources += '" );\n';
+		masSources += masErrors;
 	}
 
 	return masSources;
 };
+
 
 ]]></script>
 </component>

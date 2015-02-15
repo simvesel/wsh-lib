@@ -31,7 +31,12 @@ function echo()
 }
 
 
-function quit( iRetCodce )
+function exit( iRetCodce )
 {
 	return g_ws.Quit( iRetCodce );
+}
+
+function quit( iRetCodce )
+{
+	return exit( iRetCodce );
 }
