@@ -5,7 +5,7 @@
 (function(){
 
 var app = fn_get_app_instance();
-var masScriptPath = app.xasRelativePath;
+var masInstallPath = app.xasInstallDirPath;
 var masAppName = app.xasAppName;
 
 /*
@@ -31,7 +31,7 @@ app.load_json_cfg = function( masFilename )
 	}
 	else
 	{
-		var masStr = general_inc( masScriptPath + masFilename );
+		var masStr = general_inc( masInstallPath + masFilename );
 		return JSON.parse( masStr );
 	}
 }

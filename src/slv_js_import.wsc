@@ -57,11 +57,11 @@ var g_ws = WScript,
 		g_sh = new ActiveXObject( "WScript.Shell" );
 
 g_cApp.xasAppName = g_fso.GetBaseName( g_ws.ScriptName );
-g_cApp.xasRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
+g_cApp.xasInstallDirPath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
 
 function r_inc( jsFile )
 {
-	return general_inc( g_cApp.xasRelativePath + jsFile );
+	return general_inc( g_cApp.xasInstallDirPath + jsFile );
 }
 
 ]]></resource>

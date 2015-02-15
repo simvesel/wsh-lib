@@ -20,11 +20,14 @@ function echo()
 		break;
 
 		default:
-			for( i=0; i < arguments.length; i++ )
+		{
+			var i = 0;
+			for( ; i < arguments.length; i++ )
 			{
 				mas += "{{" + arguments[ i ] + "}}";
 				mas += "\n";
 			}
+		}
 	}
 
 	return g_ws.Echo( mas );
