@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<?component error="true" debug="true"?>
+<component>
+<registration
+	description="WSC for simplifying import JScript Library/Source code"
+	progid="SLV.JS.Import"
+	version="1"
+	classid="{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}">
+</registration>
+
+<public>
+<comment>
+	LICENSE	GPLv3
+	@file:	"slv_js_import.wsc"
+	19:02 30.03.2014	begin project
+
+	Author:	Svyatoslav Skriplyonok (Simvesel/Simron)
+</comment>
+
+	<method name="getSourceCode"/>
+	<property name="ScriptingHost" internalName="WScript"/>
+	<property name="xasOwnPath" internalName="g_asOwnPath"/>
+	<property name="xasLibDirPath" internalName="g_asLibDirPath"/>
+</public>
+
+<resource id="rsrc_code_for_inc"><![CDATA[
+var g_ws = WScript,
+		g_fso = new ActiveXObject( "Scripting.FileSystemObject" ),
+		g_sh = new ActiveXObject( "WScript.Shell" );
+
+var g_cInc = {};
+
+g_cInc.masAbsolutePath = g_asLibDirPath;
+g_cInc.masRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
+
+function general_inc( jsFile )
+{
+	var f, masData;
+	f = g_fso.OpenTextFile( jsFile );
+	masData = f.ReadAll();
+	f.Close();
+
+	return masData;
+}
+
+function g_inc( jsFile )
+{
+	return general_inc( g_cInc.masAbsolutePath + jsFile );
+}
+
+function r_inc( jsFile )
+{
+	return general_inc( g_cInc.masRelativePath + jsFile );
+}
+]]></resource>
+
+<object id="g_sh" progid="WScript.Shell"/>
+<object id="g_fso" progid="Scripting.FileSystemObject"/>
+
+<script language="JScript"><![CDATA[
+
+// HKLM\\SOFTWARE\\Classes\\CLSID\\
+var g_asOwnPath = g_sh.RegRead( "HKCR\\CLSID\\{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}\\ScriptletURL\\" );
+g_asOwnPath = g_asOwnPath.replace( "file:///", "" );
+g_asLibDirPath = g_fso.GetParentFolderName( g_asOwnPath ) + "/";
+
+
+function getSourceCode()
+{
+	var masCode = getResource( "rsrc_code_for_inc" );
+
+	return masCode.replace( "g_asLibDirPath", '"' + g_asLibDirPath + '"' );
+};
+
+]]></script>
+</component>
