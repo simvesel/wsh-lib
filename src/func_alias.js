@@ -1,6 +1,6 @@
 "use strict";
-var g_ws = WScript,
-	g_undef = undefined;
+
+var g_undef = undefined;
 
 function echo()
 {

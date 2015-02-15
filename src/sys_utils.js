@@ -1,4 +1,5 @@
 "use strict";
+
 var global = (1,eval)('this'),
 		g_iMaxPropertyDeepForPrintFunction = 7;
 
@@ -78,18 +79,20 @@ function fn_exec_ie_prompt( mcData )
 	var oIE = g_ws.CreateObject( "InternetExplorer.Application" );
 	oIE.Visible = 0;
 	oIE.navigate( "about:blank" );
-
+	oIE.Document.title = mcData.xasCaption;
 
 	while( oIE.Busy )
 	{
-		g_ws.sleep( 30 );
+		g_ws.sleep( 100 );
 	}
+	g_ws.sleep( 150 );
 
 //	print_recursive_property( oIE );
 
-	var obj = oIE.Document.Script;
 //	g_sh.AppActivate( "iexplore.exe" );
 	g_sh.AppActivate ("Internet Explorer")
+
+	var obj = oIE.Document.Script;
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
 	oIE.Quit();
 

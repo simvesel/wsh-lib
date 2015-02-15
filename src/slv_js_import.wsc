@@ -18,21 +18,17 @@
 	Author:	Svyatoslav Skriplyonok (Simvesel/Simron)
 </comment>
 
-	<method name="getSourceCode"/>
+	<method name="fn_import"/>
 	<property name="ScriptingHost" internalName="WScript"/>
 	<property name="xasOwnPath" internalName="g_asOwnPath"/>
 	<property name="xasLibDirPath" internalName="g_asLibDirPath"/>
 </public>
 
-<resource id="rsrc_code_for_inc"><![CDATA[
-var g_ws = WScript,
-		g_fso = new ActiveXObject( "Scripting.FileSystemObject" ),
-		g_sh = new ActiveXObject( "WScript.Shell" );
+<resource id="rsrc_code_main"><![CDATA[
+"use strict";
 
 var g_cInc = {};
-
 g_cInc.masAbsolutePath = g_asLibDirPath;
-g_cInc.masRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
 
 function general_inc( jsFile )
 {
@@ -49,16 +45,27 @@ function g_inc( jsFile )
 	return general_inc( g_cInc.masAbsolutePath + jsFile );
 }
 
+]]></resource>
+
+<resource id="rsrc_code_for_r_inc"><![CDATA[
+var g_ws = WScript,
+		g_fso = new ActiveXObject( "Scripting.FileSystemObject" ),
+		g_sh = new ActiveXObject( "WScript.Shell" );
+
+g_cInc.masRelativePath = g_fso.GetParentFolderName( g_ws.ScriptFullName ) + "/";
+
 function r_inc( jsFile )
 {
 	return general_inc( g_cInc.masRelativePath + jsFile );
 }
+
 ]]></resource>
 
 <object id="g_sh" progid="WScript.Shell"/>
 <object id="g_fso" progid="Scripting.FileSystemObject"/>
 
 <script language="JScript"><![CDATA[
+"use strict";
 
 // HKLM\\SOFTWARE\\Classes\\CLSID\\
 var g_asOwnPath = g_sh.RegRead( "HKCR\\CLSID\\{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}\\ScriptletURL\\" );
@@ -66,11 +73,71 @@ g_asOwnPath = g_asOwnPath.replace( "file:///", "" );
 g_asLibDirPath = g_fso.GetParentFolderName( g_asOwnPath ) + "/";
 
 
-function getSourceCode()
+function getMainSource()
 {
-	var masCode = getResource( "rsrc_code_for_inc" );
+	var masCode = getResource( "rsrc_code_main" );
 
 	return masCode.replace( "g_asLibDirPath", '"' + g_asLibDirPath + '"' );
+};
+
+
+function getR_incSource()
+{
+	return getResource( "rsrc_code_for_r_inc" );
+};
+
+
+
+var g_bFisrtCallImport = true;
+
+var g_vLibsAlias =
+{
+	"alias": "func_alias.js",
+	"utils": "sys_utils.js"
+}
+
+/*
+var
+
+sys_utils.js
+test_my_owns_comp.js
+wsh_args_escape.js
+exec_args_escape.js
+func_alias.js
+*/
+
+eval( getMainSource() );
+
+function fn_import( masLibs )
+{
+	var masSources = "";
+	if( g_bFisrtCallImport )
+	{
+		masSources += getMainSource()
+		masSources += getR_incSource();
+		g_bFisrtCallImport = false;
+	}
+
+	var mvStr = masLibs.split( " " );
+	masLibs = null;
+	mvStr.unshift( "alias" );
+
+	var i = 0, len = mvStr.length;
+	for( ; i < len; ++i )
+	{
+		var masFile = g_vLibsAlias[ mvStr[ i ] ];
+		if( typeof masFile !== 'undefined' )
+		{
+			masSources += g_inc( masFile );
+		}
+		else
+		{
+			masSources += '\n/*\nLib alias: "' + mvStr[ i ] + '"\n';
+			masSources += 'Not found in the dictionary of libraries!\n*/\n';
+		}
+	}
+
+	return masSources;
 };
 
 ]]></script>
