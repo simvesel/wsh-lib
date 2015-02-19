@@ -109,12 +109,13 @@ eval( getMainSource() );
 //JSON	http://stackoverflow.com/questions/2994577/is-there-a-publicly-available-cdn-that-hosts-json2
 var g_vLibsAliases =
 {
-	"json": "json3_min.js", //"json2.js",
-	"utils": "sys_utils.js",
-	"exec": [ "utils", "exec_args_escape.js" ],
-	"exec_wsh": [ "utils", "wsh_args_escape.js" ],
-//	"recurv_00": [ "utils", "json-cfg", "recurv_00.js" ],
-	"json-cfg": [ "json", "json-cfg.js" ], /* последний элемент -- имя файла */
+	"json": "3rd_party_libs/json.js", //"json3_min.js", //"json2.js",
+	"utils": "lib/sys_utils.js",
+	"exec": [ "utils", "lib/exec_args_escape.js" ],
+	"exec_wsh": [ "utils", "lib/wsh_args_escape.js" ],
+	"json-cfg": [ "json", "lib/json-cfg.js" ],
+	/* последний элемент поля объекта -- имя файла */
+//	"recurv_00": [ "utils", "json-cfg", "lib/recurv_00.js" ],
 	"dummy": ""
 }
 
@@ -214,7 +215,7 @@ function fn_import( masLibs )
 		masSources += getR_incSource();
 
 // при первом вызове fn_import ВСЕГДА принудительно подключаем
-		g_vLibImportStructure.unshift( "func_alias.js" );
+		g_vLibImportStructure.unshift( "lib/func_alias.js" );
 		g_vLibImportStructure.unshift( "alias" ); // нулевой индекс будет
 	}
 
