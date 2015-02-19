@@ -41,12 +41,12 @@ function echo()
 }
 
 
-function exit( iRetCodce )
+function exit( iRetCode )
 {
-	return g_ws.Quit( iRetCodce );
+	return g_ws.Quit( iRetCode );
 }
 
-function quit( iRetCodce )
+function quit( iRetCode )
 {
-	return exit( iRetCodce );
+	return exit( iRetCode );
 }
