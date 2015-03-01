@@ -143,6 +143,19 @@ ImportError.prototype.constructor = ImportError;
 */
 function deploy_complex_alias( mvAliases )
 {
+	if( mvAliases === null )
+	{
+		throw new ImportError( "Null is not array!" );
+	}
+	if( Object.prototype.toString.call( mvAliases ) !== '[object Array]' )
+	{
+		throw new ImportError( "Not ALIAS array!" );
+	}
+	if( ! (mvAliases.length > 0) )
+	{
+		throw new ImportError( "Empty ALIAS array!" );
+	}
+
 	if( g_vLibImportDeep > 99 )
 	{
 		throw new ImportError( "Too large import deep!" );
@@ -153,6 +166,11 @@ function deploy_complex_alias( mvAliases )
 	for( ; i < len; ++i )
 	{
 		var masAlias = mvAliases[ i ];
+		if( masAlias === "" )
+		{
+			throw new ImportError( "Empty ALIAS value!" );
+		}
+
 		var mcVal = g_cIndexProcessedLibsAlias[ masAlias ];
 		if( mcVal === 1 )
 		{
@@ -190,7 +208,7 @@ throw {
     name:        "System Error",
     level:       "Show Stopper",
     message:     "Error detected. Please contact the system administrator.",
-    htmlMessage: "Error detected. Please contact the <a href=\"mailto:sysadmin@acme-widgets.com\">system administrator</a>.",
+    htmlMessage: "Error detected. Please contact the <a href=\"mailto:sysadmin@fake_domen.com\">system administrator</a>.",
     toString:    function(){return this.name + ": " + this.message;}
 };
 */
@@ -200,10 +218,22 @@ throw {
 
 
 //=============================================================
-function fn_import( masLibs )
+function fn_import_inner( masLibs )
 {
 	g_vLibImportDeep = 0;
-	deploy_complex_alias( masLibs.split( " " ) );
+	if( typeof masLibs === 'string' )
+	{
+		deploy_complex_alias( masLibs.split( " " ) );
+	}
+	else if( typeof masLibs === 'undefined' )
+	{
+		// Отработает импорт по умолчанию
+	}
+	else
+	{
+		var err = new Error();
+		throw new ImportError( "Unknown type param!\n\n" + err.stack );
+	}
 	masLibs = null;
 
 	var masSources = "";
@@ -276,8 +306,23 @@ function fn_import( masLibs )
 	}
 
 	return masSources;
-};
+}
 
+
+function fn_import( masLibs )
+{
+	return fn_import_inner( masLibs );
+/*
+	try
+	{
+	}
+	catch( mcEx )
+	{
+//		Echo( mcEx );
+		throw new ImportError( "Catch exception!..\n\n" + mcEx.stack );
+	}
+*/
+}
 
 ]]></script>
 </component>
