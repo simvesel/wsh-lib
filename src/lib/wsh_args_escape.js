@@ -1,5 +1,5 @@
 /*
-	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Copyright В© 2014 вЂ” 2015 Svyatoslav Skriplyonok. All rights reserved.
 	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
 	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
 */
@@ -31,7 +31,7 @@ function fn_wsh_arg_escape( masIn )
 			break;
 		}
 
-		// Найдена двойная кавычка -- анализируем
+		// РќР°Р№РґРµРЅР° РґРІРѕР№РЅР°СЏ РєР°РІС‹С‡РєР° -- Р°РЅР°Р»РёР·РёСЂСѓРµРј
 		var cnt_bslashes = 0,
 				reverse_ind = ind;
 
@@ -71,17 +71,17 @@ function fn_wsh_arg_escape( masIn )
 function fn_wsh_arg_smart_quote( masArg )
 {
 /*
-сделать escaping по налогии с "function fn_exec_arg_escape( masIn )".
-Например, последовательность "@`!'" заменяет один символ '"', если такая последовательность
-есть внутри строки, то перед нею удваивается количество backslash, если они есть, плюс ещё один добавляется,
-чтобы было нечётное кол-во для корректного преобразования значения параметров в исходное сосотояние
+СЃРґРµР»Р°С‚СЊ escaping РїРѕ РЅР°Р»РѕРіРёРё СЃ "function fn_exec_arg_escape( masIn )".
+РќР°РїСЂРёРјРµСЂ, РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ "@`!'" Р·Р°РјРµРЅСЏРµС‚ РѕРґРёРЅ СЃРёРјРІРѕР» '"', РµСЃР»Рё С‚Р°РєР°СЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ
+РµСЃС‚СЊ РІРЅСѓС‚СЂРё СЃС‚СЂРѕРєРё, С‚Рѕ РїРµСЂРµРґ РЅРµСЋ СѓРґРІР°РёРІР°РµС‚СЃСЏ РєРѕР»РёС‡РµСЃС‚РІРѕ backslash, РµСЃР»Рё РѕРЅРё РµСЃС‚СЊ, РїР»СЋСЃ РµС‰С‘ РѕРґРёРЅ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ,
+С‡С‚РѕР±С‹ Р±С‹Р»Рѕ РЅРµС‡С‘С‚РЅРѕРµ РєРѕР»-РІРѕ РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РІ РёСЃС…РѕРґРЅРѕРµ СЃРѕСЃРѕС‚РѕСЏРЅРёРµ
 */
 
 	if( /[\"]/.test( masArg ) === true )
 	{
 /*
-	@@@ Ссылки на темы, где обсуждается убогость WSH по разбору аргументов командной строки.
-		А именно, что нет стандартоного механизма передать двойную ковычку в аргументах...
+	@@@ РЎСЃС‹Р»РєРё РЅР° С‚РµРјС‹, РіРґРµ РѕР±СЃСѓР¶РґР°РµС‚СЃСЏ СѓР±РѕРіРѕСЃС‚СЊ WSH РїРѕ СЂР°Р·Р±РѕСЂСѓ Р°СЂРіСѓРјРµРЅС‚РѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.
+		Рђ РёРјРµРЅРЅРѕ, С‡С‚Рѕ РЅРµС‚ СЃС‚Р°РЅРґР°СЂС‚РѕРЅРѕРіРѕ РјРµС…Р°РЅРёР·РјР° РїРµСЂРµРґР°С‚СЊ РґРІРѕР№РЅСѓСЋ РєРѕРІС‹С‡РєСѓ РІ Р°СЂРіСѓРјРµРЅС‚Р°С…...
 
 ?? Passing Double-Quotes on the Command Line ??
 http://microsoft.public.scripting.vbscript.narkive.com/q7JrrkG7/passing-double-quotes-on-the-command-line#post12
@@ -90,10 +90,10 @@ http://www.experts-exchange.com/Programming/Languages/Visual_Basic/VB_Script/Q_2
 Embedding Double Quotes in the Command | Scripting content from Windows IT Pro
 http://windowsitpro.com/scripting/embedding-double-quotes-command
 
-	@@@ PowerShell тоже вышел убогим с escaping`ом спецсимволов...
+	@@@ PowerShell С‚РѕР¶Рµ РІС‹С€РµР» СѓР±РѕРіРёРј СЃ escaping`РѕРј СЃРїРµС†СЃРёРјРІРѕР»РѕРІ...
 windows - Stripping double quotes from command line arguments in PowerShell - Stack Overflow
 http://stackoverflow.com/questions/6714165/stripping-double-quotes-from-command-line-arguments-in-powershell#comment14237655_6714242
-	 It says 'closed as fixed' but there's no link to the fix or how to use it. This sucks. –  Colonel Panic Jun 6 '12 at 15:10
+	 It says 'closed as fixed' but there's no link to the fix or how to use it. This sucks. вЂ“  Colonel Panic Jun 6 '12 at 15:10
 
 Executing commands which require quotes and variables is practically impossible | Microsoft Connect
 https://connect.microsoft.com/PowerShell/feedback/details/376207/executing-commands-which-require-quotes-and-variables-is-practically-impossible
@@ -106,7 +106,7 @@ https://connect.microsoft.com/PowerShell/feedback/details/376207/executing-comma
 
 	if( /[ \t\n\v]/.test( masArg ) === true )
 	{
-		// нужно преобразовывать
+		// РЅСѓР¶РЅРѕ РїСЂРµРѕР±СЂР°Р·РѕРІС‹РІР°С‚СЊ
 		return '"' + fn_wsh_arg_escape( masArg ) + '"';
 	}
 
