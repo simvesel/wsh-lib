@@ -32,7 +32,7 @@
 "use strict";
 
 var g_cApp = {};
-g_cApp.xasAbsolutePath = g_asLibDirPath;
+g_cApp.xasLibDirPath = "${VAR_LIBDIRPATH}";
 
 function general_inc( jsFile )
 {
@@ -46,7 +46,7 @@ function general_inc( jsFile )
 
 function g_inc( jsFile )
 {
-	return general_inc( g_cApp.xasAbsolutePath + jsFile );
+	return general_inc( g_cApp.xasLibDirPath + jsFile );
 }
 
 function fn_get_app_instance()
@@ -54,7 +54,9 @@ function fn_get_app_instance()
 	return g_cApp;
 }
 
-]]></resource>
+]]>
+</resource>
+
 
 <resource id="rsrc_code_for_r_inc"><![CDATA[
 var g_ws = WScript,
@@ -69,7 +71,11 @@ function r_inc( jsFile )
 	return general_inc( g_cApp.xasInstallDirPath + jsFile );
 }
 
-]]></resource>
+]]>
+</resource>
+
+
+
 
 <object id="g_sh" progid="WScript.Shell"/>
 <object id="g_fso" progid="Scripting.FileSystemObject"/>
@@ -79,6 +85,10 @@ function r_inc( jsFile )
 
 // HKLM\\SOFTWARE\\Classes\\CLSID\\
 var g_asOwnPath = g_sh.RegRead( "HKCR\\CLSID\\{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}\\ScriptletURL\\" );
+if( g_asOwnPath === "" )
+{
+	throw new Error( "REG: read empty path value!" );
+}
 g_asOwnPath = g_asOwnPath.replace( "file:///", "" );
 g_asLibDirPath = g_fso.GetParentFolderName( g_asOwnPath ) + "/";
 
@@ -87,14 +97,14 @@ function getMainSource()
 {
 	var masCode = getResource( "rsrc_code_main" );
 
-	return masCode.replace( "g_asLibDirPath", '"' + g_asLibDirPath + '"' );
-};
+	return masCode.replace( "${VAR_LIBDIRPATH}", g_asLibDirPath );
+}
 
 
 function getR_incSource()
 {
 	return getResource( "rsrc_code_for_r_inc" );
-};
+}
 
 
 eval( getMainSource() );
