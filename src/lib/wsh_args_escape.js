@@ -79,8 +79,30 @@ function fn_wsh_arg_smart_quote( masArg )
 
 	if( /[\"]/.test( masArg ) === true )
 	{
-		throw new NotSupportedEscapeError( "Double quotes escaping for wsh-core not supported!" );
+/*
+	@@@ —сылки на темы, где обсуждаетс€ убогость WSH по разбору аргументов командной строки.
+		ј именно, что нет стандартоного механизма передать двойную ковычку в аргументах...
+
+?? Passing Double-Quotes on the Command Line ??
+http://microsoft.public.scripting.vbscript.narkive.com/q7JrrkG7/passing-double-quotes-on-the-command-line#post12
+Passing an argument which includes double quotes to wscript.echo: vbscript, wscript.echo, windows
+http://www.experts-exchange.com/Programming/Languages/Visual_Basic/VB_Script/Q_25765595.html
+Embedding Double Quotes in the Command | Scripting content from Windows IT Pro
+http://windowsitpro.com/scripting/embedding-double-quotes-command
+
+	@@@ PowerShell тоже вышел убогим с escaping`ом спецсимволов...
+windows - Stripping double quotes from command line arguments in PowerShell - Stack Overflow
+http://stackoverflow.com/questions/6714165/stripping-double-quotes-from-command-line-arguments-in-powershell#comment14237655_6714242
+	 It says 'closed as fixed' but there's no link to the fix or how to use it. This sucks. Ц  Colonel Panic Jun 6 '12 at 15:10
+
+Executing commands which require quotes and variables is practically impossible | Microsoft Connect
+https://connect.microsoft.com/PowerShell/feedback/details/376207/executing-commands-which-require-quotes-and-variables-is-practically-impossible
+*/
+
+		throw new NotSupportedEscapeError( "Double quote escaping for wsh-core not supported!" );
 	}
+
+
 
 	if( /[ \t\n\v]/.test( masArg ) === true )
 	{
