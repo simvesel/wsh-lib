@@ -1,5 +1,5 @@
 /*
-	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Copyright Â© 2014 â€” 2015 Svyatoslav Skriplyonok. All rights reserved.
 	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
 	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
 */
