@@ -1,5 +1,5 @@
 /*
-	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Copyright В© 2014 вЂ” 2015 Svyatoslav Skriplyonok. All rights reserved.
 	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
 	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
 */
@@ -8,16 +8,16 @@
 "use strict";
 
 /*
-	Функция сделана по мотивам этих документов:
+	Р¤СѓРЅРєС†РёСЏ СЃРґРµР»Р°РЅР° РїРѕ РјРѕС‚РёРІР°Рј СЌС‚РёС… РґРѕРєСѓРјРµРЅС‚РѕРІ:
 	*) Everyone quotes command line arguments the wrong way - Twisty Little Passages, All Alike - Site Home - MSDN Blogs
 			http://blogs.msdn.com/b/twistylittlepassagesallalike/archive/2011/04/23/everyone-quotes-arguments-the-wrong-way.aspx?Redirected=true
 	*) Parsing C++ Command-Line Arguments (C++)
 			http://msdn.microsoft.com/en-us/library/17w5ykft%28v=vs.85%29.aspx
 
-	API просто жесть... Шёл 2015 год, а они так и не додумались сделать API так,
-	чтобы прикладные программисты не могли неправильно вызывать дочерние процессы.
-	Подсмотрели бы уже у Linux, как они сделали API по созданию процессов.
-	Например, интерфейсы системных функций: execv, execve
+	API РїСЂРѕСЃС‚Рѕ Р¶РµСЃС‚СЊ... РЁС‘Р» 2015 РіРѕРґ, Р° РѕРЅРё С‚Р°Рє Рё РЅРµ РґРѕРґСѓРјР°Р»РёСЃСЊ СЃРґРµР»Р°С‚СЊ API С‚Р°Рє,
+	С‡С‚РѕР±С‹ РїСЂРёРєР»Р°РґРЅС‹Рµ РїСЂРѕРіСЂР°РјРјРёСЃС‚С‹ РЅРµ РјРѕРіР»Рё РЅРµРїСЂР°РІРёР»СЊРЅРѕ РІС‹Р·С‹РІР°С‚СЊ РґРѕС‡РµСЂРЅРёРµ РїСЂРѕС†РµСЃСЃС‹.
+	РџРѕРґСЃРјРѕС‚СЂРµР»Рё Р±С‹ СѓР¶Рµ Сѓ Linux, РєР°Рє РѕРЅРё СЃРґРµР»Р°Р»Рё API РїРѕ СЃРѕР·РґР°РЅРёСЋ РїСЂРѕС†РµСЃСЃРѕРІ.
+	РќР°РїСЂРёРјРµСЂ, РёРЅС‚РµСЂС„РµР№СЃС‹ СЃРёСЃС‚РµРјРЅС‹С… С„СѓРЅРєС†РёР№: execv, execve
 */
 function fn_exec_arg_escape( masIn )
 {
@@ -25,8 +25,8 @@ function fn_exec_arg_escape( masIn )
 	var masNew = "";
 	echo( masIn );
 
-// Изменяем данные в строке, чтобы был проще алгоритм по преобразованию:
-// в конце строки нужны пробел и двойная ковычка, чтобы через slice выбирался и конец строки
+// РР·РјРµРЅСЏРµРј РґР°РЅРЅС‹Рµ РІ СЃС‚СЂРѕРєРµ, С‡С‚РѕР±С‹ Р±С‹Р» РїСЂРѕС‰Рµ Р°Р»РіРѕСЂРёС‚Рј РїРѕ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЋ:
+// РІ РєРѕРЅС†Рµ СЃС‚СЂРѕРєРё РЅСѓР¶РЅС‹ РїСЂРѕР±РµР» Рё РґРІРѕР№РЅР°СЏ РєРѕРІС‹С‡РєР°, С‡С‚РѕР±С‹ С‡РµСЂРµР· slice РІС‹Р±РёСЂР°Р»СЃСЏ Рё РєРѕРЅРµС† СЃС‚СЂРѕРєРё
 	masIn = ' ' + masIn + ' "';
 
 	do
@@ -37,7 +37,7 @@ function fn_exec_arg_escape( masIn )
 			break;
 		}
 
-		// Найдена двойная кавычка -- анализируем
+		// РќР°Р№РґРµРЅР° РґРІРѕР№РЅР°СЏ РєР°РІС‹С‡РєР° -- Р°РЅР°Р»РёР·РёСЂСѓРµРј
 		var cnt_bslashes = 0,
 				reverse_ind = ind;
 
@@ -79,7 +79,7 @@ function fn_exec_arg_smart_quote( masArg )
 {
 	if( /[ \t\n\v\"]/.test( masArg ) === true )
 	{
-		// нужно преобразовывать
+		// РЅСѓР¶РЅРѕ РїСЂРµРѕР±СЂР°Р·РѕРІС‹РІР°С‚СЊ
 		return '"' + fn_exec_arg_escape( masArg ) + '"';
 	}
 
