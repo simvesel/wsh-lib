@@ -214,6 +214,7 @@ function deploy_complex_alias( mvAliases )
 		if( typeof mcVal === 'string' )
 		{
 			g_cIndexProcessedLibsAlias[ masAlias ] = 1;
+
 			g_vLibImportStructure.push( masAlias );
 			g_vLibImportStructure.push( mcVal );
 		}
@@ -327,6 +328,8 @@ function fn_import_inner( masLibs )
 
 		masSources += masOneFileSource + '\n;;;;;;;\n';
 	}
+	// Освобождаем память из-под массива
+	g_vLibImportStructure = null;
 
 
 	if( miErrCounter !== 0 )
@@ -339,8 +342,6 @@ function fn_import_inner( masLibs )
 		masSources += masErrors;
 	}
 
-	// Освобождаем память из-под массива
-	g_vLibImportStructure = null;
 	return masSources;
 }
 
