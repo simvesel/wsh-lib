@@ -109,34 +109,56 @@ function getR_incSource()
 
 eval( getMainSource() );
 
+
+//=============================================================
 /*
-Индекс с ранее обработанными алиасами
 Массив алиасов, которые нужно заинклудить (сложных алиасов не должно быть!!!)
 Последний элемент удалять из массива и передавать в рекурсивную функцию уменьшенный массив.
 Последний элемент-имя файла добавлять в массив подключений с первоначальным алиасом.
 */
-
-//JSON	http://stackoverflow.com/questions/2994577/is-there-a-publicly-available-cdn-that-hosts-json2
 var g_vLibsAliases =
 {
-	"json": "3rd_party_libs/json.js", //"json3_min.js", //"json2.js",
+/*
+  Последний элемент в поле-массиве -- имя файла, а все остальные -- имена
+  модулей, от которых зависит.
+
+	@@@ Пример:
+	"store-cfg": [ "utils", "reg-cfg", "ini-cfg", "json-cfg", "lib/store-cfg.js" ],
+*/
+
+
+// Сторонние библиотеки
+	"json": "3rd_party_libs/json.js",
+
+//-------------------------------------------------------------
+	"json-cfg": [ "json", "lib/json-cfg.js" ],
+
+
+//=============================================================
+// Мои библиотеки
 	"utils": "lib/sys_utils.js",
+
+//-------------------------------------------------------------
 	"exec": [ "utils", "lib/exec_args_escape.js" ],
 	"exec_wsh": [ "utils", "lib/wsh_args_escape.js" ],
-	"json-cfg": [ "json", "lib/json-cfg.js" ],
-	/* последний элемент поля объекта -- имя файла */
-//	"recurv_00": [ "utils", "json-cfg", "lib/recurv_00.js" ],
-	"dummy": ""
+
+//-------------------------------------------------------------
+	"dummy": "alias"
 }
 
+
+//=============================================================
+// Индекс с ранее обработанными алиасами модулей при раскрутке зависимостей
 var g_cIndexProcessedLibsAlias = {};
-
-var g_vLibImportStructure = [];
-
 var g_bFisrtCallImport = true;
-var g_vLibImportDeep;
+
+// Массив используется для хранения раскрученных зависимостей модулей
+// для текущего вызова функции импорта "fn_import".
+var g_vLibImportStructure;
+var g_vLibImportDeep; //< Текущая глубина рекурсии при раскрутке зависимостей
 
 
+//=============================================================
 // Create a new object, that prototypally inherits from the Error constructor.
 function ImportError( message )
 {
@@ -231,6 +253,8 @@ throw {
 function fn_import_inner( masLibs )
 {
 	g_vLibImportDeep = 0;
+	g_vLibImportStructure = [];
+
 	if( typeof masLibs === 'string' )
 	{
 		deploy_complex_alias( masLibs.split( " " ) );
@@ -315,6 +339,8 @@ function fn_import_inner( masLibs )
 		masSources += masErrors;
 	}
 
+	// Освобождаем память из-под массива
+	g_vLibImportStructure = null;
 	return masSources;
 }
 
