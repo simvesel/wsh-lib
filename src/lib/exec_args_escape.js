@@ -7,7 +7,18 @@
 
 "use strict";
 
+/*
+	Функция сделана по мотивам этих документов:
+	*) Everyone quotes command line arguments the wrong way - Twisty Little Passages, All Alike - Site Home - MSDN Blogs
+			http://blogs.msdn.com/b/twistylittlepassagesallalike/archive/2011/04/23/everyone-quotes-arguments-the-wrong-way.aspx?Redirected=true
+	*) Parsing C++ Command-Line Arguments (C++)
+			http://msdn.microsoft.com/en-us/library/17w5ykft%28v=vs.85%29.aspx
 
+	API просто жесть... Шёл 2015 год, а они так и не додумались сделать API так,
+	чтобы прикладные программисты не могли неправильно вызывать дочерние процессы.
+	Подсмотрели бы уже у Linux, как они сделали API по созданию процессов.
+	Например, интерфейсы системных функций: execv, execve
+*/
 function fn_exec_arg_escape( masIn )
 {
 	var pos = 0, ind;
@@ -58,7 +69,8 @@ function fn_exec_arg_escape( masIn )
 	while( true );
 
 	var masRes = masNew.slice( 1, - (masEscapeQuotes.length + 1) );
-//	echo( "{{" + masRes + "}}" );
+
+//	dbg_echo( masRes );
 	return masRes;
 }
 
