@@ -55,4 +55,4 @@ app.load_json_cfg = function( masFilename )
 
 */
 
-}());
+})();
