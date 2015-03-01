@@ -326,7 +326,7 @@ function fn_import_inner( masLibs )
 */
 		}
 
-		masSources += masOneFileSource + '\n;;;;;;;\n';
+		masSources += masOneFileSource + '\n;;;\t//@@@ ### @@@\n';
 	}
 	// Освобождаем память из-под массива
 	g_vLibImportStructure = null;
