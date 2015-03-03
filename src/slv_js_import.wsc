@@ -161,7 +161,7 @@ var g_vLibImportDeep; //< Текущая глубина рекурсии при 
 
 
 //=============================================================
-// Create a new object, that prototypally inherits from the Error constructor.
+/* Create a new object, that prototypally inherits from the Error constructor.
 function ImportError( message )
 {
   this.name = "ImportError";
@@ -170,7 +170,7 @@ function ImportError( message )
 //ImportError.prototype = Error.prototype;
 ImportError.prototype = new Error();
 ImportError.prototype.constructor = ImportError;
-
+*/
 
 /*
 короткосложный_импорт => длиннопростой_импорт
@@ -179,20 +179,20 @@ function deploy_complex_alias( mvAliases )
 {
 	if( mvAliases === null )
 	{
-		throw new ImportError( "Null is not array!" );
+		throw new Error( "Null is not array!" );
 	}
 	if( Object.prototype.toString.call( mvAliases ) !== '[object Array]' )
 	{
-		throw new ImportError( "Not ALIAS array!" );
+		throw new Error( "Not ALIAS array!" );
 	}
 	if( ! (mvAliases.length > 0) )
 	{
-		throw new ImportError( "Empty ALIAS array!" );
+		throw new Error( "Empty ALIAS array!" );
 	}
 
 	if( g_vLibImportDeep > 99 )
 	{
-		throw new ImportError( "Too large import deep!" );
+		throw new Error( "Too large import deep!" );
 	}
 
 	var i = 0, len = mvAliases.length;
@@ -202,20 +202,20 @@ function deploy_complex_alias( mvAliases )
 		var masAlias = mvAliases[ i ];
 		if( masAlias === "" )
 		{
-			throw new ImportError( "Empty ALIAS value!" );
+			throw new Error( "Empty ALIAS value!" );
 		}
 
-		var mcVal = g_cIndexProcessedLibsAlias[ masAlias ];
-		if( mcVal === 1 )
+		var mbExist = g_cIndexProcessedLibsAlias[ masAlias ];
+		if( mbExist === true )
 		{
 			continue;
 		}
 
-		mcVal = g_vLibsAliases[ masAlias ];
+		var mcVal = g_vLibsAliases[ masAlias ];
 
 		if( typeof mcVal === 'string' )
 		{
-			g_cIndexProcessedLibsAlias[ masAlias ] = 1;
+			g_cIndexProcessedLibsAlias[ masAlias ] = true;
 
 			g_vLibImportStructure.push( masAlias );
 			g_vLibImportStructure.push( mcVal );
@@ -224,7 +224,7 @@ function deploy_complex_alias( mvAliases )
 		else if( Object.prototype.toString.call( mcVal ) === '[object Array]' )
 		{
 			var masFileName = mcVal.pop();
-			g_cIndexProcessedLibsAlias[ masAlias ] = 1;
+			g_cIndexProcessedLibsAlias[ masAlias ] = true;
 
 			++g_vLibImportDeep;
 			deploy_complex_alias( mcVal );
@@ -234,8 +234,7 @@ function deploy_complex_alias( mvAliases )
 		}
 		else
 		{
-			var err = new Error();
-			throw new ImportError( "Unknown ALIAS type!\n\n" + err.stack );
+			throw new Error( "Unknown ALIAS type!\n\tALIAS: '" + mcVal + "'" );
 		}
 
 /*
@@ -260,6 +259,10 @@ function fn_import_inner( masLibs )
 
 	if( typeof masLibs === 'string' )
 	{
+		if( masLibs.length === 0 )
+		{
+			throw new Error( "Incorrect param: empty string!" );
+		}
 		deploy_complex_alias( masLibs.split( " " ) );
 	}
 	else if( typeof masLibs === 'undefined' )
@@ -269,7 +272,7 @@ function fn_import_inner( masLibs )
 	else
 	{
 		var err = new Error();
-		throw new ImportError( "Unknown type param!\n\n" + err.stack );
+		throw new Error( "Unknown type param!\n\n" + err.stack );
 	}
 	masLibs = null;
 
@@ -358,7 +361,7 @@ function fn_import( masLibs )
 	catch( mcEx )
 	{
 //		Echo( mcEx );
-		throw new ImportError( "Catch exception!..\n\n" + mcEx.stack );
+		throw new Error( "Catch exception!..\n\n" + mcEx.stack );
 	}
 */
 }
