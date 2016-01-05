@@ -105,12 +105,13 @@ function fn_exec_ie_prompt( mcData )
 	}
 	g_ws.sleep( 150 );
 
-//	print_recursive_property( oIE );
-
-//	g_sh.AppActivate( "iexplore.exe" );
-	g_sh.AppActivate ("Internet Explorer")
-
+	//print_recursive_property( oIE );
 	var obj = oIE.Document.Script;
+
+	//g_sh.AppActivate( "iexplore.exe" );
+	//g_sh.AppActivate( "Internet Explorer" );
+	g_sh.AppActivate( oIE.Document.title );
+
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
 //	mcData.xcOut_val = null;
 	oIE.Quit();

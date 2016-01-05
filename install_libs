@@ -1,0 +1,10 @@
+-- Создать каталог под библиотеки:
+c:\libs\wsh\
+
+-- Распаковать архив с файлами бибилиотек в созданый каталог.
+-- Зарегать "slv_js_import.wsc" из-под Администратора:
+regsvr32 /i:"e:\WRK\WSH\wsh-lib\src\slv_js_import.wsc" "%SystemRoot%\system32\scrobj.dll"
+regsvr32 /i:"slv_js_import.wsc" "%SystemRoot%\system32\scrobj.dll"
+
+-- Запустить тестовый скрипт из рандомного каталога:
+test_my_owns_comp.js

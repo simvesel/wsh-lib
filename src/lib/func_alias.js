@@ -69,5 +69,5 @@ function exit( iRetCode )
 
 function quit( iRetCode )
 {
-	return exit( iRetCode );
+	return g_ws.Quit( iRetCode );
 }
