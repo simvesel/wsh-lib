@@ -1,13 +1,105 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <?component error="true" debug="true"?>
-<component>
+
+<package>
+
+
+<component id="inner_vbs_proxy">
+<registration
+	description="WSC proxying methods and codes of VBScript under JScript"
+	progid="SLV.VBS.Proxy"
+	version="1"
+	classid="{08337B23-A0B1-46D2-A93F-27F2FF3BD856}">
+</registration>
+
+
+<public>
+<comment>
+/*
+	Copyright © 2016 — 2016 Svyatoslav Skriplyonok. All rights reserved.
+	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
+	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
+*/
+
+	@file:   "slv_js_import.wsc"
+	@begin:  16:19 06.01.2016
+	@author: Svyatoslav Skriplyonok (Simvesel/Simron)
+</comment>
+
+
+	<method name="inner_hidden_prompt" internalName="prompt">
+		<parameter name="PromptText"/>
+		<parameter name="Title"/>
+		<parameter name="DefaultValue"/>
+		<parameter name="XPos"/>
+		<parameter name="YPos"/>
+		<parameter name="Helpfile"/>
+		<parameter name="Context"/>
+	</method>
+
+	<method name="prompt_old">
+		<parameter name="PromptText"/>
+		<parameter name="Title"/>
+		<parameter name="DefaultValue"/>
+		<parameter name="XPos"/>
+		<parameter name="YPos"/>
+		<parameter name="Helpfile"/>
+		<parameter name="Context"/>
+	</method>
+</public>
+
+<script language="VBScript"><![CDATA[
+	' (ByRef Company As String, Optional ByVal Office As String = "QJZ")
+	' Function prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+	Function prompt_old( ByRef PromptText,_
+			ByRef Title,_
+			ByRef DefaultValue,_
+			ByRef XPos,_
+			ByRef YPos,_
+			ByRef Helpfile,_
+			ByRef Context _
+	)
+		Dim mRes
+		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+		If DefaultValue <> "" And mRes = ""  Then
+			Set mRes = Nothing
+		End If
+		prompt_old = mRes
+	End Function
+
+
+	Function prompt( ByRef PromptText,_
+			ByRef Title,_
+			ByRef DefaultValue,_
+			ByRef XPos,_
+			ByRef YPos,_
+			ByRef Helpfile,_
+			ByRef Context _
+	)
+		Dim mRes
+		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+		' If DefaultValue <> "" And mRes = ""  Then
+		'	Set mRes = Nothing
+		' End If
+		prompt = mRes
+	End Function
+]]></script>
+
+</component>
+
+
+
+
+
+<component id="inner_slv_import">
 <registration
 	description="WSC for simplifying import JScript Library/Source code"
 	progid="SLV.JS.Import"
 	version="1"
 	classid="{5183B7A6-9D7D-4ED7-8CF7-48E832C8DAD1}">
 </registration>
+
 
 <public>
 <comment>
@@ -23,10 +115,17 @@
 	@author: Svyatoslav Skriplyonok (Simvesel/Simron)
 </comment>
 
-	<method name="fn_import"/>
+
+
+	<method name="fn_import">
+		<parameter name="ArrayOfAliasesToLibraryForImport"/>
+	</method>
+
 	<property name="xasOwnPath" internalName="g_asOwnPath"/>
 	<property name="xasLibDirPath" internalName="g_asLibDirPath"/>
 </public>
+
+
 
 <resource id="rsrc_code_main"><![CDATA[
 "use strict";
@@ -368,3 +467,4 @@ function fn_import( masLibs )
 
 ]]></script>
 </component>
+</package>
