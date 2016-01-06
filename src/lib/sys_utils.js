@@ -104,7 +104,12 @@ function fn_try_catch( fn_name )
 
 	g_vbs.prompt = function( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
 	{
-		return g_VBSP.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
+		var mRes = g_VBSP.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
+		if( typeof mRes === "undefined" )
+		{
+			return null;
+		}
+		return mRes;
 	};
 
 
@@ -142,7 +147,6 @@ function fn_exec_ie_prompt( mcData )
 
 
 	mcData.xcOut_val = g_vbs.prompt( mcData.xasCaption, mcData.xasCaption, mcData.xcIn_val );
-
 
 	if( mcData.xcOut_val === null )
 	{
