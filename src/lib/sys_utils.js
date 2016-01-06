@@ -1,5 +1,5 @@
 /*
-	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
+	Copyright © 2014 — 2016 Svyatoslav Skriplyonok. All rights reserved.
 	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
 	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
 */
@@ -89,21 +89,44 @@ function fn_try_catch( fn_name )
 }
 
 
+
+
+/** TODO
+	windows 7 & IE 11: AppActivate don`t set focus on IE prompt window
+
+	vbscript: InputBox( Message, Title, Value )
+	ie html page
+	ie hta applictaion
+*/
+
+	var g_VBSP = new ActiveXObject( "SLV.VBS.Proxy" );
+	var g_vbs = {};
+
+	g_vbs.prompt = function( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+	{
+		return g_VBSP.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
+	};
+
+
 // A helper function to view a prompt window
 function fn_exec_ie_prompt( mcData )
 {
 	mcData.xcOut_val = null;
 
+
+/*
+	return false;
 	var oIE = g_ws.CreateObject( "InternetExplorer.Application" );
-	oIE.Visible = 0;
 	oIE.navigate( "about:blank" );
+	oIE.Visible = 0;
 	oIE.Document.title = mcData.xasCaption;
 
 	while( oIE.Busy )
 	{
-		g_ws.sleep( 100 );
+		g_ws.sleep( 50 );
 	}
-	g_ws.sleep( 150 );
+	g_ws.sleep( 50 );
+
 
 	//print_recursive_property( oIE );
 	var obj = oIE.Document.Script;
@@ -115,6 +138,11 @@ function fn_exec_ie_prompt( mcData )
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
 //	mcData.xcOut_val = null;
 	oIE.Quit();
+*/
+
+
+	mcData.xcOut_val = g_vbs.prompt( mcData.xasCaption, mcData.xasCaption, mcData.xcIn_val );
+
 
 	if( mcData.xcOut_val === null )
 	{
