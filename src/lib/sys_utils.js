@@ -112,21 +112,21 @@ g_cApp.vbs.objProxy = new ActiveXObject( "SLV.VBS.Proxy" );
 \1 = (typeof \1 === 'undefined') ? null : \1;
 */
 
-g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, XPos, YPos, Helpfile, Context )
+g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, iXPos, iYPos, Helpfile, iContext )
 {
 	Title = (typeof Title === 'undefined' || Title === null) ? "prompt..." : Title;
 	Title = g_cApp.xasMsgGeneralTitle + Title
 
 	/*
 	DefaultValue = (typeof DefaultValue === 'undefined') ? null : DefaultValue;
-	XPos = (typeof XPos === 'undefined') ? null : XPos;
-	YPos = (typeof YPos === 'undefined') ? null : YPos;
+	iXPos = (typeof iXPos === 'undefined') ? null : iXPos;
+	iYPos = (typeof iYPos === 'undefined') ? null : iYPos;
 	Helpfile = (typeof Helpfile === 'undefined') ? null : Helpfile;
 	Context = (typeof Context === 'undefined') ? null : Context;
 	*/
 
 
-	var mRes = g_cApp.vbs.objProxy.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
+	var mRes = g_cApp.vbs.objProxy.inner_hidden_prompt( PromptText, Title, DefaultValue, iXPos, iYPos, Helpfile, iContext );
 	if( typeof mRes === "undefined" )
 	{
 		return null;
@@ -134,8 +134,64 @@ g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, XPos, YPos, Helpf
 	return mRes;
 };
 
+
+
+
+
+/**
+ * The following constants are used with the MsgBox function to
+ * identify what buttons and icons appear on a message box and which
+ * button is the default.
+ */
+g_cApp.vbs.OKOnly           =    0; // Display OK button only.
+g_cApp.vbs.OKCancel         =    1; // Display OK and Cancel buttons.
+g_cApp.vbs.AbortRetryIgnore =    2; // Display Abort, Retry, and Ignore buttons.
+g_cApp.vbs.YesNoCancel      =    3; // Display Yes, No, and Cancel buttons.
+g_cApp.vbs.YesNo            =    4; // Display Yes and No buttons.
+g_cApp.vbs.RetryCancel      =    5; // Display Retry and Cancel buttons.
+g_cApp.vbs.Critical         =   16; // Display Critical Message icon.
+g_cApp.vbs.Question         =   32; // Display Warning Query icon.
+g_cApp.vbs.Exclamation      =   48; // Display Warning Message icon.
+g_cApp.vbs.Information      =   64; // Display Information Message icon.
+g_cApp.vbs.DefaultButton1   =    0; // First button is default.
+g_cApp.vbs.DefaultButton2   =  256; // Second button is default.
+g_cApp.vbs.DefaultButton3   =  512; // Third button is default.
+g_cApp.vbs.DefaultButton4   =  768; // Fourth button is default.
+g_cApp.vbs.ApplicationModal =    0; // Application modal; the user must respond to the message box before continuing work in the current application.
+g_cApp.vbs.SystemModal      = 4096; // System modal; all applications are suspended until the user responds to the message box.
+
+
+/**
+ * The following constants are used with the MsgBox function to
+ * identify which button a user has selected.
+ */
+g_cApp.vbs.OK     = 1; // OK
+g_cApp.vbs.Cancel = 2; // Cancel
+g_cApp.vbs.Abort  = 3; // Abort
+g_cApp.vbs.Retry  = 4; // Retry
+g_cApp.vbs.Ignore = 5; // Ignore
+g_cApp.vbs.Yes    = 6; // Yes
+g_cApp.vbs.No     = 7; // No
+
+
+g_cApp.vbs.msgbox = function( PromptText, iButtons, Title, Helpfile, iContext )
+{
+	Title = (typeof Title === 'undefined' || Title === null) ? "question/message..." : Title;
+	Title = g_cApp.xasMsgGeneralTitle + Title
+
+	iButtons = (typeof iButtons === 'undefined' || iButtons === null) ?  (g_cApp.vbs.YesNoCancel | g_cApp.vbs.DefaultButton2 | g_cApp.vbs.Question) : iButtons;
+
+	var mRes = g_cApp.vbs.objProxy.inner_hidden_MsgBox( PromptText, iButtons, Title, Helpfile, iContext );
+	return mRes;
+};
+
+//g_cApp.vbs.msgbox( "Are you terminator?" );
+
 //var g_tst = new ActiveXObject( "InputDlg.Dialog" );
 //echo( g_tst.InputBox( "==mes==", "==title==", "@" ) );
+
+
+
 
 
 
