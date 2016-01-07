@@ -102,8 +102,24 @@ function fn_try_catch( fn_name )
 	var g_VBSP = new ActiveXObject( "SLV.VBS.Proxy" );
 	var g_vbs = {};
 
+
+/*
+		reg replace
+(\w+)[, ]*
+\1 = (typeof \1 === 'undefined') ? null : \1;
+*/
 	g_vbs.prompt = function( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
 	{
+		/*
+		Title = (typeof Title === 'undefined') ? null : Title;
+		DefaultValue = (typeof DefaultValue === 'undefined') ? null : DefaultValue;
+		XPos = (typeof XPos === 'undefined') ? null : XPos;
+		YPos = (typeof YPos === 'undefined') ? null : YPos;
+		Helpfile = (typeof Helpfile === 'undefined') ? null : Helpfile;
+		Context = (typeof Context === 'undefined') ? null : Context;
+		// DefaultValue = null;
+		*/
+
 		var mRes = g_VBSP.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
 		if( typeof mRes === "undefined" )
 		{
@@ -111,6 +127,10 @@ function fn_try_catch( fn_name )
 		}
 		return mRes;
 	};
+
+	//var g_tst = new ActiveXObject( "InputDlg.Dialog" );
+	//echo( g_tst.InputBox( "==mes==", "==title==", "@" ) );
+
 
 
 // A helper function to view a prompt window
@@ -138,12 +158,15 @@ function fn_exec_ie_prompt( mcData )
 
 	//g_sh.AppActivate( "iexplore.exe" );
 	//g_sh.AppActivate( "Internet Explorer" );
-	g_sh.AppActivate( oIE.Document.title );
+	//g_sh.AppActivate( oIE.Document.title );
+	//g_sh.AppActivate( "Microsoft Internet Explorer" );
+	//g_sh.AppActivate( "Запрос пользователю" );
 
 	mcData.xcOut_val = obj.prompt( mcData.xasCaption, mcData.xcIn_val );
 //	mcData.xcOut_val = null;
 	oIE.Quit();
 */
+
 
 
 	mcData.xcOut_val = g_vbs.prompt( mcData.xasCaption, mcData.xasCaption, mcData.xcIn_val );

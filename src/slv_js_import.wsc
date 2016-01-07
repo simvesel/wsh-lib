@@ -38,6 +38,7 @@
 		<parameter name="Context"/>
 	</method>
 
+
 	<method name="prompt_old">
 		<parameter name="PromptText"/>
 		<parameter name="Title"/>
@@ -69,15 +70,34 @@
 	End Function
 
 
-	Function prompt( ByRef PromptText,_
-			ByRef Title,_
-			ByRef DefaultValue,_
-			ByRef XPos,_
-			ByRef YPos,_
-			ByRef Helpfile,_
-			ByRef Context _
+
+	Function fn_return_vbError( p1, p2 )
+		fn_return_vbError = p1
+	End Function
+
+
+	Function prompt( ByVal PromptText,_
+			ByVal Title,_
+			ByVal DefaultValue,_
+			ByVal XPos,_
+			ByVal YPos,_
+			ByVal Helpfile,_
+			ByVal Context _
 	)
 		Dim mRes
+		'If TypeName( XPos ) = "Nothing" Then
+		'	PromptText = PromptText & "		[XPos -- <Nothing>]"
+		'End If
+
+
+		If IsEmpty( XPos ) Then
+			'Set XPos11 = Nothing
+			XPos = fn_return_vbError( , 1 )
+			YPos = fn_return_vbError( , 1 )
+			PromptText = PromptText & "		[XPos -- <Empty>]"
+		End If
+
+		'InputBox( "test--2000" )
 		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
 		' If DefaultValue <> "" And mRes = ""  Then
 		'	Set mRes = Nothing
