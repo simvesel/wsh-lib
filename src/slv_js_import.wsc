@@ -116,9 +116,14 @@
 
 
 
-	Function fn_return_vbError( p1, p2 )
-		fn_return_vbError = p1
+	Function fn_inner_return_vbError( p1, p2 )
+		fn_inner_return_vbError = p1
 	End Function
+
+	Function fn_return_vbError()
+		fn_return_vbError = fn_inner_return_vbError( , 1 )
+	End Function
+
 
 
 	Function prompt( ByVal PromptText,_
@@ -130,17 +135,17 @@
 			ByVal Context _
 	)
 		If IsEmpty( XPos ) Then
-			Dim masInfo: masInfo = DBG_get_rtti( XPos )
+			Dim masInfo: masInfo = DBG_get_rtti( XPos ) '"** H9"" 2%67&K **"
 			MsgBox masInfo, , "== XPos =="
 
-			masInfo = DBG_get_rtti( fn_return_vbError( , 1 ) )
+			masInfo = DBG_get_rtti( fn_return_vbError() )
 			MsgBox masInfo, , "== return func =="
 
-			XPos = fn_return_vbError( , 1 )
+			XPos = fn_return_vbError()
 			masInfo = DBG_get_rtti( XPos )
 			MsgBox masInfo, , "== in var =="
 
-			'YPos = fn_return_vbError( , 1 )
+			'YPos = fn_return_vbError()
 		End If
 
 
