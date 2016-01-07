@@ -32,10 +32,10 @@
 		<parameter name="PromptText"/>
 		<parameter name="Title"/>
 		<parameter name="DefaultValue"/>
-		<parameter name="XPos"/>
-		<parameter name="YPos"/>
+		<parameter name="iXPos"/>
+		<parameter name="iYPos"/>
 		<parameter name="Helpfile"/>
-		<parameter name="Context"/>
+		<parameter name="iContext"/>
 	</method>
 
 
@@ -43,10 +43,19 @@
 		<parameter name="PromptText"/>
 		<parameter name="Title"/>
 		<parameter name="DefaultValue"/>
-		<parameter name="XPos"/>
-		<parameter name="YPos"/>
+		<parameter name="iXPos"/>
+		<parameter name="iYPos"/>
 		<parameter name="Helpfile"/>
-		<parameter name="Context"/>
+		<parameter name="iContext"/>
+	</method>
+
+
+	<method name="inner_hidden_MsgBox">
+		<parameter name="PromptText"/>
+		<parameter name="iButtons"/>
+		<parameter name="Title"/>
+		<parameter name="Helpfile"/>
+		<parameter name="iContext"/>
 	</method>
 </public>
 
@@ -97,17 +106,17 @@
 
 
 	' (ByRef Company As String, Optional ByVal Office As String = "QJZ")
-	' Function prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+	' Function prompt( PromptText, Title, DefaultValue, iXPos, iYPos, Helpfile, iContext )
 	Function prompt_old( ByRef PromptText,_
 			ByRef Title,_
 			ByRef DefaultValue,_
-			ByRef XPos,_
-			ByRef YPos,_
+			ByRef iXPos,_
+			ByRef iYPos,_
 			ByRef Helpfile,_
-			ByRef Context _
+			ByRef iContext _
 	)
 		Dim mRes
-		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+		mRes = InputBox( PromptText, Title, DefaultValue, iXPos, iYPos, Helpfile, iContext )
 		If DefaultValue <> "" And mRes = ""  Then
 			Set mRes = Nothing
 		End If
@@ -129,14 +138,14 @@
 	Function prompt( ByRef PromptText,_
 			ByRef Title,_
 			ByRef DefaultValue,_
-			ByRef XPos,_
-			ByRef YPos,_
+			ByRef iXPos,_
+			ByRef iYPos,_
 			ByRef Helpfile,_
-			ByRef Context _
+			ByRef iContext _
 	)
-		'If IsEmpty( XPos ) Then
-		'	Dim masInfo: masInfo = DBG_get_rtti( XPos ) '"** H9"" 2%67&K **"
-		'	MsgBox masInfo, , "== XPos =="
+		'If IsEmpty( iXPos ) Then
+		'	Dim masInfo: masInfo = DBG_get_rtti( iXPos ) '"** H9"" 2%67&K **"
+		'	MsgBox masInfo, , "== iXPos =="
 
 		'	masInfo = DBG_get_rtti( fn_get_vbError() )
 		'	MsgBox masInfo, , "== return func =="
@@ -152,9 +161,24 @@
 		'Dim mRes: mRes = InputBox( PromptText, Title, fn_get_vbError(), fn_get_vbError(), mXPos11, Helpfile, Context )
 
 
-		Dim mRes: mRes = InputBox( PromptText, Title, DefaultValue ) ', XPos, YPos, Helpfile, Context )
+		Dim mRes: mRes = InputBox( PromptText, Title, DefaultValue ) ', iXPos, iYPos, Helpfile, iContext )
 
 		prompt = mRes
+	End Function
+
+
+	Function inner_hidden_MsgBox( ByRef PromptText,_
+			ByRef iButtons,_
+			ByRef Title,_
+			ByRef Helpfile,_
+			ByRef iContext _
+	)
+		'If IsEmpty( iButtons ) Then
+		'	inner_hidden_MsgBox = MsgBox ( PromptText, , Title ) ', Helpfile, iContext )
+		'Else
+		'End If
+
+		inner_hidden_MsgBox = MsgBox ( PromptText, iButtons, Title )
 	End Function
 ]]></script>
 
