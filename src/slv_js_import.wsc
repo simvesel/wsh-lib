@@ -116,45 +116,44 @@
 
 
 
-	Function fn_inner_return_vbError( p1, p2 )
-		fn_inner_return_vbError = p1
+	Function fn_inner_get_vbError( p1, p2 )
+		fn_inner_get_vbError = p1
 	End Function
 
-	Function fn_return_vbError()
-		fn_return_vbError = fn_inner_return_vbError( , 1 )
+	Function fn_get_vbError()
+		fn_get_vbError = fn_inner_get_vbError( , 1 )
 	End Function
 
 
 
-	Function prompt( ByVal PromptText,_
-			ByVal Title,_
-			ByVal DefaultValue,_
-			ByVal XPos,_
-			ByVal YPos,_
-			ByVal Helpfile,_
-			ByVal Context _
+	Function prompt( ByRef PromptText,_
+			ByRef Title,_
+			ByRef DefaultValue,_
+			ByRef XPos,_
+			ByRef YPos,_
+			ByRef Helpfile,_
+			ByRef Context _
 	)
-		If IsEmpty( XPos ) Then
-			Dim masInfo: masInfo = DBG_get_rtti( XPos ) '"** H9"" 2%67&K **"
-			MsgBox masInfo, , "== XPos =="
+		'If IsEmpty( XPos ) Then
+		'	Dim masInfo: masInfo = DBG_get_rtti( XPos ) '"** H9"" 2%67&K **"
+		'	MsgBox masInfo, , "== XPos =="
 
-			masInfo = DBG_get_rtti( fn_return_vbError() )
-			MsgBox masInfo, , "== return func =="
+		'	masInfo = DBG_get_rtti( fn_get_vbError() )
+		'	MsgBox masInfo, , "== return func =="
 
-			XPos = fn_return_vbError()
-			masInfo = DBG_get_rtti( XPos )
-			MsgBox masInfo, , "== in var =="
+		'	Dim mRet0: mRet0 = fn_get_vbError()
+		'	masInfo = DBG_get_rtti( mRet0 )
+		'	MsgBox masInfo, , "== in var =="
+		'End If
 
-			'YPos = fn_return_vbError()
-		End If
+		'Dim mXPos11
+		'mXPos11 = fn_get_vbError()
+		'Set mXPos11 = fn_get_vbError()
+		'Dim mRes: mRes = InputBox( PromptText, Title, fn_get_vbError(), fn_get_vbError(), mXPos11, Helpfile, Context )
 
 
-		Dim mRes
-		'InputBox( "test--2000" )
-		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
-		' If DefaultValue <> "" And mRes = ""  Then
-		'	Set mRes = Nothing
-		' End If
+		Dim mRes: mRes = InputBox( PromptText, Title, DefaultValue ) ', XPos, YPos, Helpfile, Context )
+
 		prompt = mRes
 	End Function
 ]]></script>
