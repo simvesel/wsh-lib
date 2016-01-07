@@ -51,6 +51,51 @@
 </public>
 
 <script language="VBScript"><![CDATA[
+
+	Function qq(s) : qq = """" & s & """" : End Function
+
+	Function isGoodStr(x)
+		isGoodStr = False
+		If vbString = VarType(x) Then
+			 If 0 < Len(x) Then
+					isGoodStr = True
+			 End If
+		End If
+	End Function
+
+	Function DBG_get_rtti( x )
+		'CHECK: Nothing, Unknown, Error
+		Dim masTpNm: masTpNm = TypeName( x )
+		Dim masVal
+
+		Select Case VarType( x )
+			Case vbEmpty
+				masVal = "<Empty>"
+			Case vbNull
+				masVal = "<Null>"
+			Case vbObject
+				masVal = "<" & TypeName( x ) & " object>"
+
+			Case vbError
+				masVal = "<Error>"
+			Case vbVariant
+				masVal = "<" & TypeName( x ) & " Variant>"
+			Case vbDataObject
+				masVal = "<" & TypeName( x ) & " DataObject>"
+			Case vbArray
+				masVal = "<" & TypeName( x ) & " Array>"
+
+			Case vbString
+				masVal = qq( x )
+			Case Else
+				masVal = CStr( x )
+		End Select
+		Dim masBool: masBool = CStr( isGoodStr( x ) )
+		DBG_get_rtti = vbCrLf & "TpNm: " & masTpNm & vbCrLf & "Val: " & masVal & vbCrLf & "GdStr: " & masBool & vbCrLf
+	End Function
+
+
+
 	' (ByRef Company As String, Optional ByVal Office As String = "QJZ")
 	' Function prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
 	Function prompt_old( ByRef PromptText,_
@@ -84,19 +129,22 @@
 			ByVal Helpfile,_
 			ByVal Context _
 	)
-		Dim mRes
-		'If TypeName( XPos ) = "Nothing" Then
-		'	PromptText = PromptText & "		[XPos -- <Nothing>]"
-		'End If
-
-
 		If IsEmpty( XPos ) Then
-			'Set XPos11 = Nothing
+			Dim masInfo: masInfo = DBG_get_rtti( XPos )
+			MsgBox masInfo, , "== XPos =="
+
+			masInfo = DBG_get_rtti( fn_return_vbError( , 1 ) )
+			MsgBox masInfo, , "== return func =="
+
 			XPos = fn_return_vbError( , 1 )
-			YPos = fn_return_vbError( , 1 )
-			PromptText = PromptText & "		[XPos -- <Empty>]"
+			masInfo = DBG_get_rtti( XPos )
+			MsgBox masInfo, , "== in var =="
+
+			'YPos = fn_return_vbError( , 1 )
 		End If
 
+
+		Dim mRes
 		'InputBox( "test--2000" )
 		mRes = InputBox( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
 		' If DefaultValue <> "" And mRes = ""  Then
