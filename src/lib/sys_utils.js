@@ -8,6 +8,7 @@
 "use strict";
 
 g_cApp.iMaxPropertyDeepForPrintFunction = 7;
+g_cApp.xasMsgGeneralTitle = g_cApp.xasAppName + ": ";
 
 
 String.prototype.repeat = function( miTimes )
@@ -114,7 +115,7 @@ g_cApp.vbs.objProxy = new ActiveXObject( "SLV.VBS.Proxy" );
 g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, XPos, YPos, Helpfile, Context )
 {
 	Title = (typeof Title === 'undefined' || Title === null) ? "prompt..." : Title;
-	Title = g_cApp.xasAppName + ": " + Title
+	Title = g_cApp.xasMsgGeneralTitle + Title
 
 	/*
 	DefaultValue = (typeof DefaultValue === 'undefined') ? null : DefaultValue;
@@ -123,6 +124,7 @@ g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, XPos, YPos, Helpf
 	Helpfile = (typeof Helpfile === 'undefined') ? null : Helpfile;
 	Context = (typeof Context === 'undefined') ? null : Context;
 	*/
+
 
 	var mRes = g_cApp.vbs.objProxy.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
 	if( typeof mRes === "undefined" )
