@@ -7,7 +7,7 @@
 
 "use strict";
 
-var g_iMaxPropertyDeepForPrintFunction = 7;
+g_cApp.iMaxPropertyDeepForPrintFunction = 7;
 
 
 String.prototype.repeat = function( miTimes )
@@ -22,7 +22,7 @@ String.prototype.repeat = function( miTimes )
 
 function recursive_property( obj, masPath, iDeep )
 {
-	if( iDeep === g_iMaxPropertyDeepForPrintFunction )
+	if( iDeep === g_cApp.iMaxPropertyDeepForPrintFunction )
 		return masPath + "\n\tToo large object...";
 
 	var masCurr = masPath;
@@ -59,7 +59,7 @@ function recursive_property( obj, masPath, iDeep )
 function print_recursive_property( mcObj, iGlobDeep )
 {
 	iGlobDeep = iGlobDeep || 7;
-	g_iMaxPropertyDeepForPrintFunction = iGlobDeep;
+	g_cApp.iMaxPropertyDeepForPrintFunction = iGlobDeep;
 	return echo( recursive_property( mcObj, "_ROOT_", 0 ) );
 }
 
@@ -91,6 +91,11 @@ function fn_try_catch( fn_name )
 
 
 
+	// JScript Object for store VBScript code Proxy
+g_cApp.vbs = {};
+g_cApp.vbs.objProxy = new ActiveXObject( "SLV.VBS.Proxy" );
+
+
 /** TODO
 	windows 7 & IE 11: AppActivate don`t set focus on IE prompt window
 
@@ -99,37 +104,78 @@ function fn_try_catch( fn_name )
 	ie hta applictaion
 */
 
-	var g_VBSP = new ActiveXObject( "SLV.VBS.Proxy" );
-	var g_vbs = {};
-
 
 /*
 		reg replace
 (\w+)[, ]*
 \1 = (typeof \1 === 'undefined') ? null : \1;
 */
-	g_vbs.prompt = function( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context )
+
+g_cApp.vbs.prompt = function( PromptText, DefaultValue, Title, XPos, YPos, Helpfile, Context )
+{
+	Title = (typeof Title === 'undefined' || Title === null) ? "prompt..." : Title;
+	Title = g_cApp.xasAppName + ": " + Title
+
+	/*
+	DefaultValue = (typeof DefaultValue === 'undefined') ? null : DefaultValue;
+	XPos = (typeof XPos === 'undefined') ? null : XPos;
+	YPos = (typeof YPos === 'undefined') ? null : YPos;
+	Helpfile = (typeof Helpfile === 'undefined') ? null : Helpfile;
+	Context = (typeof Context === 'undefined') ? null : Context;
+	*/
+
+	var mRes = g_cApp.vbs.objProxy.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
+	if( typeof mRes === "undefined" )
 	{
-		/*
-		Title = (typeof Title === 'undefined') ? null : Title;
-		DefaultValue = (typeof DefaultValue === 'undefined') ? null : DefaultValue;
-		XPos = (typeof XPos === 'undefined') ? null : XPos;
-		YPos = (typeof YPos === 'undefined') ? null : YPos;
-		Helpfile = (typeof Helpfile === 'undefined') ? null : Helpfile;
-		Context = (typeof Context === 'undefined') ? null : Context;
-		// DefaultValue = null;
-		*/
+		return null;
+	}
+	return mRes;
+};
 
-		var mRes = g_VBSP.inner_hidden_prompt( PromptText, Title, DefaultValue, XPos, YPos, Helpfile, Context );
-		if( typeof mRes === "undefined" )
-		{
-			return null;
-		}
-		return mRes;
-	};
+//var g_tst = new ActiveXObject( "InputDlg.Dialog" );
+//echo( g_tst.InputBox( "==mes==", "==title==", "@" ) );
 
-	//var g_tst = new ActiveXObject( "InputDlg.Dialog" );
-	//echo( g_tst.InputBox( "==mes==", "==title==", "@" ) );
+
+
+g_cApp.cacheRegExp = {};
+	// https://gist.github.com/dperini/729294
+g_cApp.cacheRegExp.url = new RegExp
+(
+"^" +
+	// protocol identifier
+	"(?:(?:https?|ftps?)://)" +
+	// user:pass authentication
+	"(?:\\S+(?::\\S*)?@)?" +
+	"(?:" +
+		// IP address exclusion
+		// private & local networks
+		"(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+		"(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+		"(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+		// IP address dotted notation octets
+		// excludes loopback network 0.0.0.0
+		// excludes reserved space >= 224.0.0.0
+		// excludes network & broacast addresses
+		// (first & last IP address of each class)
+		"(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+		"(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+		"(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+	"|" +
+		// host name
+		"(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" +
+		// domain name
+		"(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" +
+		// TLD identifier
+		"(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" +
+		// TLD may end with dot
+		"\\.?" +
+	")" +
+	// port number
+	"(?::\\d{2,5})?" +
+	// resource path
+	"(?:[/?#]\\S*)?" +
+"$", "i"
+);
 
 
 
@@ -169,7 +215,7 @@ function fn_exec_ie_prompt( mcData )
 
 
 
-	mcData.xcOut_val = g_vbs.prompt( mcData.xasCaption, mcData.xasCaption, mcData.xcIn_val );
+	mcData.xcOut_val = g_cApp.vbs.prompt( mcData.xasCaption, mcData.xcIn_val );
 
 	if( mcData.xcOut_val === null )
 	{
@@ -203,7 +249,8 @@ function fn_exec_ie_prompt( mcData )
 		break;
 
 		case 'url':
-			masRegExp = /^(https?|ftps?):\/\/.+$/;
+				// /^(https?|ftps?):\/\/.+$/;
+			masRegExp = g_cApp.cacheRegExp.url;
 		break;
 
 
