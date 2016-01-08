@@ -17,7 +17,7 @@
 <public>
 <comment>
 /*
-	Copyright © 2016 — 2016 Svyatoslav Skriplyonok. All rights reserved.
+	Copyright © 2014 — 2016 Svyatoslav Skriplyonok. All rights reserved.
 	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
 	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
 */
@@ -199,14 +199,6 @@
 
 <public>
 <comment>
-/*
-	Copyright © 2014 — 2015 Svyatoslav Skriplyonok. All rights reserved.
-	Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
-	License: https://github.com/simvesel/wsh-lib/blob/master/LICENSE
-*/
-
-
-	@file:   "slv_js_import.wsc"
 	@begin:  19:02 30.03.2014
 	@author: Svyatoslav Skriplyonok (Simvesel/Simron)
 </comment>
