@@ -199,7 +199,7 @@ g_cApp.cacheRegExp = {};
 	// https://gist.github.com/dperini/729294
 g_cApp.cacheRegExp.url = new RegExp
 (
-"^" +
+"^(" +
 	// protocol identifier
 	"(?:(?:https?|ftps?)://)" +
 	// user:pass authentication
@@ -232,6 +232,7 @@ g_cApp.cacheRegExp.url = new RegExp
 	"(?::\\d{2,5})?" +
 	// resource path
 	"(?:[/?#]\\S*)?" +
+	"|magnet:\\?xt=urn:btih:[0-9a-f]{40}.*)" +
 "$", "i"
 );
 
