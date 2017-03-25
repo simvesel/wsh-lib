@@ -93,7 +93,14 @@ function fn_build_command( mvArgs )
 	var masExec = "";
 	for( i = 0; i < iLen; i++ )
 	{
-		masExec += fn_exec_arg_smart_quote( mvArgs[ i ] );
+		var val = mvArgs[ i ];
+/*
+		if(val === null || val === "") {
+			// Нужно пропустить
+			continue;
+		}
+*/
+		masExec += fn_exec_arg_smart_quote( val );
 		masExec += " ";
 	}
 //	echo( masExec );
